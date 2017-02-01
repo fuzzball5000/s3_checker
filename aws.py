@@ -3,15 +3,16 @@ from boto.s3.connection import Location
 
 s3 = boto.connect_s3()
 bucket = s3.lookup('osq')
+total_bytes = 0
 
 try:
-   read_bytes = open('currbytes', 'r')
+   read_bytes = open('currbytes', 'r+')
 except:
-   print 'Failed to open file'
+   print 'Creating temp file'
+   read_bytes = open('currbytes', 'w')
+   read_bytes.write(str(total_bytes))
 pass
 
-
-total_bytes = 0
 for key in bucket:
     total_bytes += key.size
 print total_bytes
@@ -26,5 +27,7 @@ for i in read_bytes:
     else:
         print "Something else is going on ",'%d %d' (total_bytes,i)
 
-write_bytes = open('currbytes', 'w')
-write_bytes.write(str(total_bytes))
+read_bytes.seek(0)
+read_bytes.truncate()
+read_bytes.write(str(total_bytes))
+read_bytes.close()
