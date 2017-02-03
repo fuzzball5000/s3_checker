@@ -1,8 +1,10 @@
 import boto
+import sys
+
 from boto.s3.connection import Location
 
 s3 = boto.connect_s3()
-bucket = s3.lookup('osq')
+bucket = s3.lookup(str(sys.argv[1]))
 total_bytes = 0
 
 try:
