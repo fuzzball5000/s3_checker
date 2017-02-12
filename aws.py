@@ -1,6 +1,7 @@
 import boto
 import sys
 import pymongo
+import datetime
 
 from boto.s3.connection import Location
 from pymongo import MongoClient
@@ -35,6 +36,9 @@ for i in read_bytes:
 read_bytes.seek(0)
 read_bytes.truncate()
 read_bytes.write(str(total_bytes))
-db.sizes.insert({"total" : total_bytes,"bucket" : sys.argv[1]})
+date=datetime.datetime.utcnow()
+db.sizes.insert({"total" : total_bytes,"bucket" : sys.argv[1],'date': date})
 print db.sizes.find_one()
+for r in db.sizes.find({"bucket" : sys.argv[1]}):
+    print r
 read_bytes.close()
